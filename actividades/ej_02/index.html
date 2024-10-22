@@ -3,22 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actividad #</title>
+    <title>Actividad LED Control</title>
     <link rel="stylesheet" href="styles/base.css">
 </head>
 <body>
     <header>
-        <h1>Actividad #</h1>
+        <h1>Control de LEDs y Tira WS2818B</h1>
     </header>
     <main>
+        <section>
+            <h2>Control de LEDs</h2>
+            <button id="led1-btn">Cambiar LED 1</button>
+            <button id="led2-btn">Cambiar LED 2</button>
+            <button id="led3-btn">Cambiar LED 3</button>
+        </section>
+
+        <section>
+            <h2>Control de Color Tira WS2818B</h2>
+            <label for="color-picker">Selecciona el color:</label>
+            <input type="color" id="color-picker" value="#ff0000">
+        </section>
     </main>
     <footer>
         <p>Representación Frontal y Visual de Datos</p>
         <p>Computadoras de Aeronaves</p>
-        <p>Alumno XX</p>
+        <p>Alumno Augusto Donatti</p>
         <p>Prof. Carlassara Fabrizio</p>
         <p id="fecha"></p>
     </footer>
-    <script src="scripts/base.js"></script>
+
+    <script>
+        // Pines según el esquema proporcionado
+        const pinLed1 = 32;  // LED 1
+        const pinLed2 = 33;  // LED 2
+        const pinLed3 = 25;  // LED 3
+        const pinWs2818b = 27;  // Tira de LED WS2818B
+
+        // Variables para almacenar el estado de los LEDs
+        let led1State = false;
+        let led2State = false;
+        let led3State = false;
+
+        // Función para cambiar el estado de los LEDs
+        function toggleLed(ledNumber) {
+            switch (ledNumber) {
+                case 1:
+                    led1State = !led1State;
+                    console.log(`LED 1 (Pin ${pinLed1}): ${led1State ? 'Encendido' : 'Apagado'}`);
+                    // Código para cambiar el estado del LED en el pin correspondiente
+                    break;
+                case 2:
+                    led2State = !led2State;
+                    console.log(`LED 2 (Pin ${pinLed2}): ${led2State ? 'Encendido' : 'Apagado'}`);
+                    // Código para cambiar el estado del LED en el pin correspondiente
+                    break;
+                case 3:
+                    led3State = !led3State;
+                    console.log(`LED 3 (Pin ${pinLed3}): ${led3State ? 'Encendido' : 'Apagado'}`);
+                    // Código para cambiar el estado del LED en el pin correspondiente
+                    break;
+            }
+        }
+
+        // Asignar eventos a los botones
+        document.getElementById('led1-btn').addEventListener('click', () => toggleLed(1));
+        document.getElementById('led2-btn').addEventListener('click', () => toggleLed(2));
+        document.getElementById('led3-btn').addEventListener('click', () => toggleLed(3));
+
+        // Control de la tira de LEDs WS2818B
+        document.getElementById('color-picker').addEventListener('input', (event) => {
+            const color = event.target.value;
+            console.log(`Color seleccionado para WS2818B (Pin ${pinWs2818b}): ${color}`);
+            // Aquí puedes añadir el código necesario para enviar el color a la tira de LEDs WS2818B
+        });
+
+        // Agregar la fecha al footer
+        document.getElementById('fecha').innerText = `Fecha: ${new Date().toLocaleDateString()}`;
+    </script>
 </body>
 </html>
