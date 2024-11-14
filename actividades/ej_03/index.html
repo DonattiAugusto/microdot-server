@@ -11,6 +11,17 @@
         <h1>Actividad #</h1>
     </header>
     <main>
+        <!-- Slider para elegir la temperatura de setpoint -->
+        <label for="setpointSlider">Setpoint de Temperatura: 
+            <span id="setpointValue">15</span>°C
+        </label>
+        <input type="range" id="setpointSlider" min="0" max="30" value="15" oninput="updateSetpointDisplay(this.value)" onmouseup="updateSetpoint(this.value)">
+        
+        <!-- Visualización de la temperatura y estado del buzzer -->
+        <div>
+            <h2>Temperatura Actual: <span id="currentTemp">--</span>°C</h2>
+            <h3>Estado del Buzzer: <span id="buzzerStatus">--</span></h3>
+        </div>
     </main>
     <footer>
         <p>Representación Frontal y Visual de Datos</p>
@@ -19,6 +30,41 @@
         <p>Prof. Carlassara Fabrizio</p>
         <p id="fecha"></p>
     </footer>
+    
     <script src="scripts/base.js"></script>
+    <script>
+        // Muestra el valor actual del slider de setpoint en la página
+        function updateSetpointDisplay(value) {
+            document.getElementById('setpointValue').textContent = value;
+        }
+
+        // Envia el setpoint al servidor al soltar el slider
+        async function updateSetpoint(value) {
+            const response = await fetch(`/setpoint/set/${value}`);
+            const data = await response.json();
+            document.getElementById('buzzerStatus').textContent = data.buzzer;
+        }
+
+        // Actualiza temperatura y estado del buzzer periódicamente
+        async function fetchTemperatureAndBuzzer() {
+            try {
+                const tempResponse = await fetch('/sensors/ds18b20/read');
+                const tempData = await tempResponse.json();
+                document.getElementById('currentTemp').textContent = tempData.temperature.toFixed(1);
+
+                const buzzerResponse = await fetch('/buzzer/status');
+                const buzzerData = await buzzerResponse.json();
+                document.getElementById('buzzerStatus').textContent = buzzerData.buzzer;
+            } catch (error) {
+                console.error('Error al obtener la temperatura o el estado del buzzer:', error);
+            }
+        }
+
+        // Ejecuta fetchTemperatureAndBuzzer cada 5 segundos
+        setInterval(fetchTemperatureAndBuzzer, 5000);
+
+        // Actualiza la fecha actual en el footer
+        document.getElementById("fecha").textContent = new Date().toLocaleDateString();
+    </script>
 </body>
 </html>
